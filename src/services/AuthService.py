@@ -11,11 +11,11 @@ class AuthService():
             row=cursor.fetchone()
             if row != None:
                 userDB = User(row[0], row[1], row[2], row[3], row[4])
-                token = uuid.uuid4().hex
-                update_sql = "UPDATE users SET remember_token=%s WHERE id=%s"
-                cursor.execute(update_sql, (token, userDB.id))
-                db.connection.commit()
                 if(userDB.check_password(user.password)):
+                    token = uuid.uuid4().hex
+                    update_sql = "UPDATE users SET remember_token=%s WHERE id=%s"
+                    cursor.execute(update_sql, (token, userDB.id))
+                    db.connection.commit()
                     return {
                         'id': userDB.id,
                         'name': userDB.name,
