@@ -1,4 +1,4 @@
-//Pasos para correr el proyecto
+Pasos para correr el proyecto
 1.Crea tu entorno virtual en la raíz del proyecto con 
 > python -m venv venv
 2.Después instala las dependencias con
