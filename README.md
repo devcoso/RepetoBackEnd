@@ -3,7 +3,7 @@
 ```
 python -m venv .venv
 ```
-2. Actica el entorno virtual con
+2. Activa el entorno virtual con
 ```
 .\.venv\Scripts\activate
 ```
