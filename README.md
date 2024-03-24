@@ -12,7 +12,7 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 4. Instala el dump de la db llamada repeto.dump
-5. Crea tus archivos de envioroment en un .env como el siguiente ejemplo
+5. Crea tus archivos de environment  en un .env como el siguiente ejemplo
 ```
 MYSQL_HOST = 'localhost'
 MYSQL_DB = 'repeto'
