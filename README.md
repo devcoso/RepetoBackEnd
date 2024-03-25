@@ -1,4 +1,4 @@
-#¿Cómo ejecuto está aplicación?
+#¿Cómo ejecuto esta aplicación?
 1. Crea tu entorno virtual en la raíz del proyecto con 
 ```
 python -m venv .venv
@@ -11,7 +11,7 @@ python -m venv .venv
 ```
 pip install -r requirements.txt
 ```
-4. Instala el dump de la db llamada repeto.dump
+4. Instalar el dump de la db llamada repeto.dump
 5. Crea tus archivos de environment  en un .env como el siguiente ejemplo
 ```
 MYSQL_HOST = 'localhost'
