@@ -1,27 +1,30 @@
-from models.User import User
-import uuid
+#Database
+from src.database.db_mysql import get_connection
+
+from src.models.User import User
+from src.utils.Security import Security
 
 class AuthService():
     @classmethod
-    def login(self, db, user):
+    def login(self, user):
         try:
-            cursor = db.connection.cursor()
-            sql="SELECT id, name, email, password, points FROM users WHERE email=%s"
-            cursor.execute(sql, (user.email,))
-            row=cursor.fetchone()
+            connection = get_connection()
+            with connection.cursor() as cursor:
+                sql="SELECT id, name, email, password, points FROM users WHERE email=%s"
+                cursor.execute(sql, (user.email,))
+                connection.commit()
+                row=cursor.fetchone()
+            connection.close()
             if row != None:
                 userDB = User(row[0], row[1], row[2], row[3], row[4])
                 if(userDB.check_password(user.password)):
-                    token = uuid.uuid4().hex
-                    update_sql = "UPDATE users SET remember_token=%s WHERE id=%s"
-                    cursor.execute(update_sql, (token, userDB.id))
-                    db.connection.commit()
+                    token = Security.generate_token(userDB)
                     return {
                         'id': userDB.id,
                         'name': userDB.name,
                         'email': userDB.email,
                         'points': userDB.points,
-                        'remember_token': token
+                        'jwt': token
                     }
                 else:
                     return None
@@ -30,30 +33,44 @@ class AuthService():
         except Exception as ex:
             raise Exception(ex)
     @classmethod
-    def register(self, db,  user):
+    def register(self,  user):
         if(not user.verify_user()):
             return {
-                'error': 'Invalid user data'
+                'error': True,
+                'message': 'Datos no válidos'
             }
         try:
-            cursor = db.connection.cursor()
-            sql="SELECT id FROM users WHERE email=%s"
-            cursor.execute(sql, (user.email,))
-            row=cursor.fetchone()
+            connection = get_connection()
+            with connection.cursor() as cursor:
+                sql="SELECT id FROM users WHERE email=%s"
+                cursor.execute(sql, (user.email,))
+                connection.commit()
+                row=cursor.fetchone()
+            connection.close()
             if row == None:
                 user.password = user.hash_password(user.password)
-                token = uuid.uuid4().hex
-                sql="INSERT INTO users (name, email, password, remember_token) VALUES (%s, %s, %s, %s)"
-                cursor.execute(sql, (user.name, user.email, user.password, token))
-                db.connection.commit()
+                connection = get_connection()
+                with connection.cursor() as cursor:
+                    sql="INSERT INTO users (name, email, password) VALUES (%s, %s, %s)"
+                    cursor.execute(sql, (user.name, user.email, user.password))
+                    connection.commit()
+                    user.id = cursor.lastrowid
+                connection.close()
+                token = Security.generate_token(user)
                 return {
-                    'id': cursor.lastrowid,
-                    'name': user.name,
-                    'email': user.email,
-                    'points': 0,
-                    'remember_token': token
+                    'error': False,
+                    'user': {
+                        'id': user.id,
+                        'name': user.name,
+                        'email': user.email,
+                        'points': 0,
+                        'jwt': token
+                    },
                 }
             else:
-                return None
+                return {
+                    'error': True,
+                    'message': 'El correo ya está registrado'
+                }
         except Exception as ex:
             raise Exception(ex)
