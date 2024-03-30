@@ -25,9 +25,7 @@ class Security() :
         if 'Authorization' not in headers:
             return None
         autorization = headers['Authorization']
-        print(autorization)
         encoded_token = autorization.split(' ')[1]
-        print(encoded_token)
         try:
             return jwt.decode(encoded_token, config('JWT_SECRET_KEY'), algorithms=['HS256'])
         except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, jwt.DecodeError):
