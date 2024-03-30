@@ -1,7 +1,9 @@
+import uuid
 #Database
 from src.database.db_mysql import get_connection
-
+#Models
 from src.models.User import User
+#Utils
 from src.utils.Security import Security
 
 class AuthService():
@@ -71,6 +73,36 @@ class AuthService():
                 return {
                     'error': True,
                     'message': 'El correo ya está registrado'
+                }
+        except Exception as ex:
+            raise Exception(ex)
+    @classmethod
+    def forgot_password(self, user):
+        try:
+            connection = get_connection()
+            with connection.cursor() as cursor:
+                sql="SELECT id FROM users WHERE email=%s"
+                cursor.execute(sql, (user.email,))
+                connection.commit()
+                row=cursor.fetchone()
+            connection.close()
+            if row != None:
+                token = uuid.uuid4().hex
+                connection = get_connection()
+                with connection.cursor() as cursor:
+                    sql="UPDATE users SET token=%s WHERE email=%s"
+                    cursor.execute(sql, (token, user.email))
+                    connection.commit()
+                    row=cursor.fetchone()
+                connection.close()
+                return {
+                    'error': False,
+                    'message': 'Se ha enviado un correo con las instrucciones'
+                }
+            else:
+                return {
+                    'error': True,
+                    'message': 'El correo no está registrado'
                 }
         except Exception as ex:
             raise Exception(ex)

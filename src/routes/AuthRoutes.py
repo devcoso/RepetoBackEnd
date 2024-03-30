@@ -23,3 +23,12 @@ def register():
         return jsonify({'user': user['user'], 'error': False})
     else:
         return jsonify({'message': user['message'], 'error': True}), 401
+    
+@main.route('/forgot-password', methods=['POST'])
+def forgot_password():
+    user = User(None, None, request.json['email'], None)
+    user = AuthService.forgot_password(user)
+    if user['error'] == False:
+        return jsonify({'message': user['message'], 'error': False})
+    else:
+        return jsonify({'message': user['message'], 'error': True}), 401
