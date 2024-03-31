@@ -46,7 +46,7 @@ class EmailSender:
                         </head>
                         <body>
                             <h1 >Recupera tu cuenta de <span>Repeto</span></h1>
-                            <p>Da click en este <a href="{config('FRONTEND_URL')}/reset-password/{token}">enlace</a> para reestablecer tu contraseña. Si tú no quieres reestabelecer tu contraseña, entonces ignora este email.</p>
+                            <p>Da click en este <a href="{config('FRONTEND_URL')}reset-password/{token}">enlace</a> para reestablecer tu contraseña. Si tú no quieres reestabelecer tu contraseña, entonces ignora este email.</p>
                         </body>
             </html>"""
 
