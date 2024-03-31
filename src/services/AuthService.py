@@ -145,3 +145,16 @@ class AuthService():
                 }
         except Exception as ex:
             raise Exception(ex)
+    @classmethod
+    def me(self, headers):
+        user = Security.verify_token(headers)
+        if user != None:
+            return {
+                'error': False,
+                'user': user
+            }
+        else:
+            return {
+                'error': True,
+                'message': 'Usuario no autorizado'
+            }

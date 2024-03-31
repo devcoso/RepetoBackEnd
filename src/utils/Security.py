@@ -16,7 +16,7 @@ class Security() :
             'email': authenticate_user.email,
             'points': authenticate_user.points,
             'iat': datetime.datetime.now(tz=cls.tz),
-            'exp': datetime.datetime.now(tz=cls.tz) + datetime.timedelta(days=5),
+            'exp': datetime.datetime.now(tz=cls.tz) + datetime.timedelta(days=1),
         }
         return jwt.encode(payload, config('JWT_SECRET_KEY'), algorithm='HS256')
     
@@ -26,6 +26,7 @@ class Security() :
             return None
         autorization = headers['Authorization']
         encoded_token = autorization.split(' ')[1]
+        print (encoded_token)
         try:
             return jwt.decode(encoded_token, config('JWT_SECRET_KEY'), algorithms=['HS256'])
         except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, jwt.DecodeError):

@@ -40,3 +40,12 @@ def reset_password():
         return jsonify({'message': response['message'], 'error': False})
     else:
         return jsonify({'message': response['message'], 'error': True}), 401
+
+@main.route('/me' , methods=['GET'])
+def me(): 
+    user = AuthService.me(request.headers)
+    print(request.headers)
+    if user['error'] == False:
+        return jsonify({'user': user['user'], 'error': False})
+    else:
+        return jsonify({'message': user['message'], 'error': True}), 401
