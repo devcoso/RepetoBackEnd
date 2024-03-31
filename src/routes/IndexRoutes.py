@@ -1,5 +1,6 @@
 from flask import request, jsonify, Blueprint
 from src.utils.Security import Security
+from src.utils.EmailSender import EmailSender
 
 main = Blueprint('index_blueprint', __name__)
 

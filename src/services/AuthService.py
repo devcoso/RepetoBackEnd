@@ -5,6 +5,8 @@ from src.database.db_mysql import get_connection
 from src.models.User import User
 #Utils
 from src.utils.Security import Security
+from src.utils.EmailSender import EmailSender
+
 
 class AuthService():
     @classmethod
@@ -95,6 +97,7 @@ class AuthService():
                     connection.commit()
                     row=cursor.fetchone()
                 connection.close()
+                EmailSender.send_recovery_email(user.email, token)
                 return {
                     'error': False,
                     'message': 'Se ha enviado un correo con las instrucciones'
