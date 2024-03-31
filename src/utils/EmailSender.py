@@ -46,7 +46,7 @@ class EmailSender:
                         </head>
                         <body>
                             <h1 >Recupera tu cuenta de <span>Repeto</span></h1>
-                            <p>Da click en este <a href="{config('FRONTEND_URL')}reset-password/{token}">enlace</a> para reestablecer tu contraseña. Si tú no quieres reestabelecer tu contraseña, entonces ignora este email.</p>
+                            <p>Da click en este <a href="{config('FRONTEND_URL')}auth/reset-password/{token}">enlace</a> para reestablecer tu contraseña. Si tú no quieres reestabelecer tu contraseña, entonces ignora este email.</p>
                         </body>
             </html>"""
 
@@ -56,4 +56,3 @@ class EmailSender:
         with smtplib.SMTP(config('EMAIL_HOST'), config('EMAIL_PORT') ) as server:
             server.login(config('EMAIL_USER'), config('EMAIL_PASS'))
             server.send_message(msg)
-        print("Email sent \n\n ----------------- \n\n")

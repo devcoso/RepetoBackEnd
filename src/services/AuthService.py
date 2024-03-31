@@ -109,3 +109,39 @@ class AuthService():
                 }
         except Exception as ex:
             raise Exception(ex)
+    @classmethod
+    def reset_password(self, token, password):
+        if(len(password) < 8 or len(password) > 16):
+            return {
+                'error': True,
+                'message': 'Contraseña inválido'
+            }
+        try:
+            connection = get_connection()
+            with connection.cursor() as cursor:
+                sql="SELECT id, email  FROM users WHERE token=%s"
+                cursor.execute(sql, (token))
+                connection.commit()
+                row=cursor.fetchone()
+            connection.close()
+            if row != None:
+                user = User(row[0], None, row[1], None)
+                user.password = user.hash_password(password)
+                connection = get_connection()
+                with connection.cursor() as cursor:
+                    sql="UPDATE users SET password=%s, token=NULL WHERE id=%s"
+                    cursor.execute(sql, (user.password, user.id))
+                    connection.commit()
+                    row=cursor.fetchone()
+                connection.close()
+                return {
+                    'error': False,
+                    'message': 'Contraseña actualizada'
+                }
+            else:
+                return {
+                    'error': True,
+                    'message': 'Token inválido'
+                }
+        except Exception as ex:
+            raise Exception(ex)

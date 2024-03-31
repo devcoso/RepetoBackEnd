@@ -32,3 +32,11 @@ def forgot_password():
         return jsonify({'message': user['message'], 'error': False})
     else:
         return jsonify({'message': user['message'], 'error': True}), 401
+    
+@main.route('/reset-password', methods=['POST'])
+def reset_password():
+    response = AuthService.reset_password(request.json['token'], request.json['password'])
+    if response['error'] == False:
+        return jsonify({'message': response['message'], 'error': False})
+    else:
+        return jsonify({'message': response['message'], 'error': True}), 401
