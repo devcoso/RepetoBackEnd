@@ -1,10 +1,13 @@
 from decouple import config
 
-class Config():
-    SECRET_KEY = config('SECRET_KEY')
+
+class Config:
+    SECRET_KEY=config('SECRET_KEY')
+
 
 class DevelopmentConfig(Config):
-    DEBUG = True
+    DEBUF= True
+
 
 config = {
     'development': DevelopmentConfig
