@@ -1,3 +1,5 @@
+import re
+
 class Usuario():
 
     def __init__(self, Oid,NombreUsuario,Contrasenia,CambiarContrasenia,Activo,Eliminar,
@@ -34,3 +36,7 @@ class Usuario():
             'Ciudad': self.Ciudad,
             'FechaRegistro': self.FechaRegistro,
         }
+    
+    def is_valid_email(email):
+        regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$'
+        return bool(re.match(regex, email))

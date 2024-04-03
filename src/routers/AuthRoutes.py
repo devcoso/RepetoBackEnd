@@ -6,7 +6,7 @@ from models.entities.Usuario import Usuario
 # Models
 from models.UsuarioModel import UsuarioModel
 
-main = Blueprint('movie_blueprint', __name__)
+main = Blueprint('auth_blueprint', __name__)
 
 
 @main.route('/login')
@@ -33,7 +33,15 @@ def restablecer_contrasenia():
     except Exception as ex:
         return jsonify({'status': False,'message': str(ex)}), 500
     
-@main.route('/add', methods=['POST'])
+@main.route('/cambiarContra', methods=['POST'])
+def update_contrasenia():
+    try:
+        nueva_contrasenia = UsuarioModel.update_usuario_contrasenia(request.headers,request.json['Contrasenia'])
+        return jsonify(nueva_contrasenia)
+    except Exception as ex:
+        return jsonify({'status': False,'message': str(ex)}), 500
+    
+@main.route('/registro', methods=['POST'])
 def add_usuario():
     try:
         usuario = Usuario(None,request.json['NombreUsuario'],request.json['Contrasenia'],None,None,None,

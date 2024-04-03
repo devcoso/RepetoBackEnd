@@ -6,6 +6,8 @@ from utils.Security import Security
 #Usuario
 from .entities.Usuario import Usuario
 
+from decouple import config
+
 # from utils.Security import Security
 oid = "(SELECT(uuid_in(overlay(overlay(md5(random()::text || ':' || clock_timestamp()::text) placing '4' from 13) placing to_hex(floor(random()*(11-8+1) + 8)::int)::text from 17)::cstring)))"
 
@@ -59,15 +61,14 @@ class UsuarioModel():
             }
    
     @classmethod
-    def update_usuario_contrasenia(self,token,contrasenia):
+    def update_usuario_contrasenia(self,header,contrasenia):
         if(len(contrasenia) < 8 or len(contrasenia) > 16):
             return {
                 'status': False,
                 'mensaje': 'Contraseña inválido'
             }
         try:
-            connection = get_connection()
-            usuario = Security.verify_token(token)
+            usuario = Security.verify_token(header)
             if usuario!=None:
                 connection = get_connection()
                 with connection.cursor() as cursor:
@@ -75,18 +76,17 @@ class UsuarioModel():
                         SET \"Contrasenia\"=%s,
                         \"CambiarContrasenia\" = false 
                         WHERE \"Oid\"=%s"""
-                    cursor.execute(sql, (usuario.Contrasenia, usuario.Oid))
+                    cursor.execute(sql, (contrasenia, usuario['Oid'],))
                     connection.commit()
-                    row=cursor.fetchone()
                 connection.close()
                 return {
                     'status': True,
-                    'mensaje': 'Actualizardo Correcto'
+                    'mensaje': 'Actualizado de Contraseña Correcto'
                 }
             else:
                  return {
                     'status': False,
-                    'mensaje': 'Contraseña inválido'
+                    'mensaje': 'Tiempo finalizado'
                 }
 
         except Exception as ex:
@@ -94,6 +94,11 @@ class UsuarioModel():
     
     @classmethod
     def get_usuario_restablecer(self,correo):
+        if Usuario.is_valid_email(correo)==False:
+            return {
+                    'status':   False,
+                    'mensaje': 'Correo invalido'
+                }
         try:
             connection = get_connection()
             with connection.cursor() as cursor:
@@ -112,12 +117,54 @@ class UsuarioModel():
                     cursor.execute(sql, (usuario[0],))
                     connection.commit()
                 connection.close()
-                
-                EmailSender.correo_restablecer_contrasenia(correo, token)
-                return {
-                    'status':   True,
-                    'mensaje': 'Se ha enviado un correo'
-                }
+
+                # Contenido HTML del mensaje
+                html_content = f"""
+                <html>
+                    <head>
+                            <title>Recupera tu cuenta de Repeto</title>
+                            <style>
+                                * {{
+                                    font-family: Arial, sans-serif;
+                                    color: #1e293b;
+                                }}
+                                body {{
+                                    margin: 0;
+                                    padding: 50px;
+                                }}
+                                h1 {{
+                                    text-align: center;
+                                    font-size: 20px;
+                                }}
+                                span {{
+                                    color: #65a30d;
+                                }}
+                                p {{
+                                    font-size: 16px;
+                                }}
+                                a {{
+                                    text-decoration: none;
+                                    color: #65a30d;
+                                    font-weight: bold;
+                                }}
+                            </style>
+                        </head>
+                        <body>
+                            <h1 >Recupera tu cuenta de <span>Repeto</span></h1>
+                            <p>Da click en este <a href="{config('FRONTEND_URL')}auth/reset-password/{token}">enlace</a> para reestablecer tu contraseña. Si tú no quieres reestabelecer tu contraseña, entonces ignora este email.</p>
+                        </body>
+                    </html>"""
+                exitosoEnvio = EmailSender.envio_correo("Repeto",correo,html_content,"Restablecer Contraseña")
+                if exitosoEnvio == True:
+                    return {
+                        'status':   True,
+                        'mensaje': 'Se ha enviado un correo'
+                    }
+                else:
+                    return {
+                        'status':   False,
+                        'mensaje': 'No se pudo enviar correo'
+                    }
             else:
                 return {
                     'status': False,
