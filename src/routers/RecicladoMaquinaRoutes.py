@@ -14,7 +14,7 @@ def api():
     except Exception as ex:
         return jsonify({'status': False,'mensaje': str(ex)}), 500
     
-@main.route('/consultar')
+@main.route('/consultar', methods=['POST'])
 def consultar_reciclado_maquina():
     try:
         datos = RecicladoMaquinaModel.get_RecicladoMaquina(request.json['Maquina'])

@@ -96,7 +96,7 @@ class RecicladoModel():
                     return {
                         'status': True,
                         'mensaje': "Guardado Exitosamente",
-                        'reciclado': OidReciclado[0],
+                        'reciclado': OidReciclado,
                     }
                 else:
                     return {
