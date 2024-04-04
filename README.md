@@ -14,10 +14,16 @@ pip install -r requirements.txt
 4. Instalar el dump de la db llamada repeto.dump
 5. Crea tus archivos de environment  en un .env como el siguiente ejemplo
 ```
-MYSQL_HOST = 'localhost'
-MYSQL_DB = 'repeto'
-MYSQL_USER = 'user'
-MYSQL_PASSWORD = 'password'
+PGSQL_HOST = 'localhost'
+PGSQL_USER = 'user'
+PGSQL_PASSWORD = 'password'
+PGSQL_DATABASE = 'repeto'
+
+FRONTEND_URL = http://localhost:5173/
+EMAIL_HOST = smtp.gmail.com
+EMAIL_PORT = 'PORT'
+EMAIL_USER = 'Correo'
+EMAIL_PASS = 'Password'
 ```
 6. Ejecuta el siguiente comando para correr el proyecto desde la raíz
 ```
