@@ -34,5 +34,5 @@ FRONTEND_URL=http://localhost:5173/
 ```
 6. Ejecuta el siguiente comando para correr el proyecto desde la raíz
 ```
-python .\index.py
+python .src\app.py
 ```
