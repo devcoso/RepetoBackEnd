@@ -30,3 +30,12 @@ def agregar_reciclado_maquina():
         return jsonify(datos)
     except Exception as ex:
         return jsonify({'status': False,'mensaje': str(ex)}), 500
+    
+@main.route('/eliminar_registros', methods=['POST'])
+def eliminar_reciclado_maquina():
+    try:
+        recicladoMaquina = RecicladoMaquina(None,request.json['Maquina'],None,None,None)
+        datos = RecicladoMaquinaModel.delete_RecicladoMaquina(recicladoMaquina)
+        return jsonify(datos)
+    except Exception as ex:
+        return jsonify({'status': False,'mensaje': str(ex)}), 500

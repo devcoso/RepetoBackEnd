@@ -92,3 +92,30 @@ class RecicladoMaquinaModel():
                     'status': False,
                     'mensaje': Exception(ex)
                 }
+
+    @classmethod
+    def delete_RecicladoMaquina(self,reciclado):
+        # oid = Security.validar_uuid(reciclado.Maquina)
+        # if oid == False:
+        #     return {
+        #         'status': False,
+        #         'mensaje': "Valor Invalido",
+        #     }
+        # else:
+            try:
+                #Elimina los registros de RecicladoMaquina
+                connection = get_connection()
+                with connection.cursor() as cursor:
+                    sql="""DELETE FROM "RecicladoMaquina" WHERE "Maquina"=%s """
+                    cursor.execute(sql, (reciclado.Maquina,))
+                    connection.commit()
+                connection.close()
+                return {
+                    'status': True,
+                    'mensaje': "Inicio de Maquina"
+                }
+            except Exception as ex:
+                return {
+                    'status': False,
+                    'mensaje': Exception(ex)
+                }

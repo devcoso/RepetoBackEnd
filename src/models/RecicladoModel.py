@@ -26,7 +26,8 @@ class RecicladoModel():
                 with connection.cursor() as cursor:
                     sql="""SELECT r."Oid",r."Persona",r."Maquina",to_char(r."Fecha",'dd-MM-yyyy'),r."Cantidad",r."Monto"
                                     FROM "Reciclado" r
-                                    WHERE r."Persona" = %s"""
+                                    WHERE r."Persona" = %s
+                                    ORDER BY r."Fecha" DESC"""
                     cursor.execute(sql, (usuario['Oid'],))
                     resultset = cursor.fetchall()
                     for row in resultset:
