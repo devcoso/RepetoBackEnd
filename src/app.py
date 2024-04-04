@@ -30,7 +30,6 @@ if __name__ == '__main__':
 
     # Error handlers
     app.register_error_handler(404,page_not_found)
-
     app.run(debug=True,host='192.168.190.68',port=3000)
     # app.run(debug=True,host='172.20.12.204',port=3000)
     # app.run(debug=True)
