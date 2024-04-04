@@ -1,3 +1,4 @@
+import uuid
 from decouple import config
 
 import datetime
@@ -36,3 +37,14 @@ class Security():
             return None
         except Exception as ex:
             raise Exception(ex)
+    
+    @classmethod
+    def validar_uuid(cadena):
+        try:
+            print(uuid.UUID(cadena))
+            # Intenta analizar la cadena como un UUID
+            uuid_obj = uuid.UUID(cadena)
+            return True
+        except ValueError:
+            # Si ocurre un error, la cadena no es un UUID válido
+            return False

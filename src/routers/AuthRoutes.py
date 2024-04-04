@@ -9,7 +9,7 @@ from models.UsuarioModel import UsuarioModel
 main = Blueprint('auth_blueprint', __name__)
 
 
-@main.route('/login')
+@main.route('/login', methods=['POST'])
 def login():
     try:
         inicioSesion = UsuarioModel.login(request.json['NombreUsuario'],request.json['Contrasenia'])
@@ -25,7 +25,7 @@ def me():
     except Exception as ex:
         return jsonify({'status': False,'message': str(ex)}), 500
 
-@main.route('/restablecer')
+@main.route('/restablecer', methods=['POST'])
 def restablecer_contrasenia():
     try:
         restablecer = UsuarioModel.get_usuario_restablecer(request.json['Correo'])
@@ -47,7 +47,6 @@ def add_usuario():
         usuario = Usuario(None,request.json['NombreUsuario'],request.json['Contrasenia'],None,None,None,
                       request.json['Nombre'],request.json['PrimerApellido'],request.json['SegundoApellido'],request.json['Correo'],None,None,None,None)
         nuevo_usuario = UsuarioModel.add_usuario(usuario)
-        print(nuevo_usuario)
         return jsonify(nuevo_usuario)
     except Exception as ex:
         return jsonify({'status': False,'message': str(ex)}), 500
