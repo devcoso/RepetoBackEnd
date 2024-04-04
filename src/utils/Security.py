@@ -1,33 +1,50 @@
-import pytz
-import datetime
-import jwt
+import uuid
 from decouple import config
 
-class Security() :
+import datetime
+import jwt
+import pytz
 
-    tz = pytz.timezone('America/Mexico_City')
+class Security():
 
+    tz = pytz.timezone("America/Lima")
 
     @classmethod
-    def generate_token(cls, authenticate_user):
-        payload = {
-            'id': authenticate_user.id,
-            'name': authenticate_user.name,
-            'email': authenticate_user.email,
-            'points': authenticate_user.points,
-            'iat': datetime.datetime.now(tz=cls.tz),
-            'exp': datetime.datetime.now(tz=cls.tz) + datetime.timedelta(days=1),
-        }
-        return jwt.encode(payload, config('JWT_SECRET_KEY'), algorithm='HS256')
-    
+    def generate_token(cls,authenticated_user,segundos):
+        try:
+            payload = {
+                'iat': datetime.datetime.now(tz=cls.tz),
+                'exp': datetime.datetime.now(tz=cls.tz) + datetime.timedelta(seconds=segundos),
+                'Oid': authenticated_user[0],
+                'Usuario': authenticated_user[1],
+            }
+            return jwt.encode(payload, config('JWT_SECRET_KEY'), algorithm='HS256')
+        except Exception as ex:
+            raise Exception(ex)
+
     @classmethod
     def verify_token(cls, headers):
-        if 'Authorization' not in headers:
-            return None
-        autorization = headers['Authorization']
-        encoded_token = autorization.split(' ')[1]
-        print (encoded_token)
         try:
-            return jwt.decode(encoded_token, config('JWT_SECRET_KEY'), algorithms=['HS256'])
-        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, jwt.DecodeError):
+            if 'Authorization' in headers.keys():
+                authorization = headers['Authorization']                
+                try:
+                    payload = jwt.decode(authorization, config('JWT_SECRET_KEY'), algorithms=["HS256"])
+                    
+                    return payload
+                except (jwt.ExpiredSignatureError, jwt.InvalidSignatureError):
+                    return None
+
             return None
+        except Exception as ex:
+            raise Exception(ex)
+    
+    @classmethod
+    def validar_uuid(cadena):
+        try:
+            print(uuid.UUID(cadena))
+            # Intenta analizar la cadena como un UUID
+            uuid_obj = uuid.UUID(cadena)
+            return True
+        except ValueError:
+            # Si ocurre un error, la cadena no es un UUID válido
+            return False
